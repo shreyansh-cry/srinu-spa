@@ -1,0 +1,22 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Owner identity check
+    function isOwner() {
+      return request.auth != null && request.auth.uid == "qao9YwRgUwcmYhW6OHBYdXI3OkM2";
+    }
+
+    // Bookings: anyone can create, only owner can read/update/delete
+    match /bookings/{bookingId} {
+      allow create: if true;
+      allow read, update, delete: if isOwner();
+    }
+
+    // Cancellations: anyone can create, only owner can read/update/delete
+    match /cancellations/{cancellationId} {
+      allow create: if true;
+      allow read, update, delete: if isOwner();
+    }
+  }
+}
